@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\Status;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,11 +18,62 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $tasks=null;
-            if (Auth::user()->isAdmin==true) {
+            $data = Task::query();
+            $totalResults = null;
+
+            if ($request->filled('search')) {
+                $searchTerm = strtolower($request->search);
+
+                // Obtenemos los campos directamente del modelo Task
+                $searchableFields = (new Task)->getFillable();
+
+                $data->where(function ($query) use ($searchTerm, $searchableFields) {
+                    // Búsqueda en los campos de Project
+                    foreach ($searchableFields as $field) {
+                        $query->orWhereRaw("LOWER({$field}) LIKE ?", ["%{$searchTerm}%"]);
+                    }
+
+                    // Búsqueda en los nombres de las relaciones
+                    $query->orWhereHas('project', function ($q) use ($searchTerm) {
+                        $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
+                    })
+                        ->orWhereHas('status', function ($q) use ($searchTerm) {
+                            $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
+                        })
+                        ->orWhereHas('priority', function ($q) use ($searchTerm) {
+                            $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
+                        });
+                });
+
+                $totalResults = $data->count();
+            }
+
+            $data = $data->with([
+                'project',
+                'assignedUser',
+                'creator',
+                'updater',
+                'status',
+                'priority',
+            ])->orderBy('name', 'asc');
+
+            return view('modules.tasks.index', [
+                'tasks' => $data->paginate(10)->appends(['search' => $request->search]),
+                'totalResults' => $totalResults
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function indexx()
+    {
+        try {
+            $tasks = null;
+            if (Auth::user()->isAdmin == true) {
                 $tasks = Task::query()
                     ->with([
                         'project',
@@ -32,7 +84,7 @@ class TaskController extends Controller
                         'priority',
                     ])
                     ->orderBy('id', 'desc')
-                    
+
                     ->paginate(10);
             } else {
 
@@ -65,18 +117,18 @@ class TaskController extends Controller
     {
         try {
             $task = new Task();
-            $task ->load([
-                        'project',
-                        'assignedUser',
-                        'creator',
-                        'updater',
-                        'status',
-                        'priority',
-                    ]);
-            $projects=Project::query()
+            $task->load([
+                'project',
+                'assignedUser',
+                'creator',
+                'updater',
+                'status',
+                'priority',
+            ]);
+            $projects = Project::query()
                 ->orderBy('name', 'ASC')
                 ->get();
-                
+
             $users = User::query()
                 ->where('id', '!=', Auth::id())
                 ->orderBy('name', 'ASC')
@@ -90,7 +142,7 @@ class TaskController extends Controller
                 ->orderBy('name', 'ASC')
                 ->get();
 
-            
+
 
             return view('modules.tasks.create', [
                 'task' => $task,
@@ -169,34 +221,34 @@ class TaskController extends Controller
     {
         try {
             try {
-                $task ->load([
-                            'project',
-                            'assignedUser',
-                            'creator',
-                            'updater',
-                            'status',
-                            'priority',
-                        ]);
+                $task->load([
+                    'project',
+                    'assignedUser',
+                    'creator',
+                    'updater',
+                    'status',
+                    'priority',
+                ]);
 
-                $projects=Project::query()
+                $projects = Project::query()
                     ->orderBy('name', 'ASC')
                     ->get();
-                    
+
                 $users = User::query()
                     ->where('id', '!=', Auth::id())
                     ->orderBy('name', 'ASC')
                     ->get();
-    
+
                 $statuses = Status::query()
                     ->orderBy('name', 'ASC')
                     ->get();
-    
+
                 $priorities = Priority::query()
                     ->orderBy('name', 'ASC')
                     ->get();
-    
-                
-    
+
+
+
                 return view('modules.tasks.edit', [
                     'task' => $task,
                     'projects' => $projects,

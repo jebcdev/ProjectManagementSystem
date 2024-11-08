@@ -48,4 +48,4 @@
         </div>
     </body>
 </html>
-<?php /**PATH D:\laragon\www\ProjectManagementSystem\resources\views/layouts/guest.blade.php ENDPATH**/ ?>
+<?php /**PATH D:\laragon\www\ProjectManagementSystem\resources\views\layouts\guest.blade.php ENDPATH**/ ?>

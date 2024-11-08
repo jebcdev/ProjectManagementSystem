@@ -16,16 +16,23 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-4 text-gray-900 dark:text-gray-100">
                     {{-- Main Content --}}
-                    
-                    {{-- Session Message --}}
+
+                    {{-- Session Message | Error Message --}}
                     @includeIf('helpers.sessionMessage')
-                    {{-- Session Message --}}
+                    @includeIf('helpers.errorMessage')
+                    {{-- Session Message | Error Message --}}
+
+                    {{-- Search Header --}}
+                    @includeIf('helpers.search-header', [
+                        'route' => 'admin.users.index',
+                    ])
+                    {{-- Search Header --}}
 
                     {{-- Users Table --}}
                     @includeIf('modules.admin.users.table')
                     {{-- Users Table --}}
-                    
-                    
+
+
                     {{-- Main Content --}}
                 </div>
             </div>

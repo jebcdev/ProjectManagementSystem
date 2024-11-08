@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -13,20 +14,41 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $users = User::query()
-                ->orderBy('name', 'ASC')
-                ->paginate(10);
+            $data = User::query();
+            $totalResults = null;
+
+            if ($request->filled('search')) {
+                $searchTerm = strtolower($request->search);
+
+
+                // Obtenemos los campos desde el modelo 
+                $searchableFields = (new User)->getFillable();
+
+
+
+                $data->where(function ($query) use ($searchTerm, $searchableFields) {
+                    foreach ($searchableFields as $field) {
+                        $query->orWhereRaw("LOWER({$field}) LIKE ?", ["%{$searchTerm}%"]);
+                    }
+                });
+
+                $totalResults = $data->count();
+            }
+
+            $data = $data->orderBy('name', 'asc');
 
             return view('modules.admin.users.index', [
-                'users' => $users
+                'users' => $data->paginate(10)->appends(['search' => $request->search]),
+                'totalResults' => $totalResults
             ]);
         } catch (\Throwable $th) {
             throw $th;
         }
     }
+    
 
     /**
      * Show the form for creating a new resource.

@@ -6,22 +6,39 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Priority\StorePriorityRequest;
 use App\Http\Requests\Priority\UpdatePriorityRequest;
 use App\Models\Priority;
-
+use Illuminate\Http\Request;
 
 class PriorityController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $priorities = Priority::query()
-                ->orderBy('name', 'ASC')
-                ->get();
+            $data = Priority::query();
+            $totalResults = null;
+
+            if ($request->filled('search')) {
+                $searchTerm = strtolower($request->search);
+
+                // Obtenemos los campos desde el modelo 
+                $searchableFields = (new Priority)->getFillable();
+
+                $data->where(function ($query) use ($searchTerm, $searchableFields) {
+                    foreach ($searchableFields as $field) {
+                        $query->orWhereRaw("LOWER({$field}) LIKE ?", ["%{$searchTerm}%"]);
+                    }
+                });
+
+                $totalResults = $data->count();
+            }
+
+            $data = $data->orderBy('name', 'asc');
 
             return view('modules.admin.priorities.index', [
-                'priorities' => $priorities
+                'priorities' => $data->paginate(10)->appends(['search' => $request->search]),
+                'totalResults' => $totalResults
             ]);
         } catch (\Throwable $th) {
             throw $th;

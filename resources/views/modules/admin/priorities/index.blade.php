@@ -18,13 +18,23 @@
 
                     {{-- Main Content --}}
 
-                    {{-- SessionMessage --}}
+                    {{-- Session Message | Error Message --}}
                     @includeIf('helpers.sessionMessage')
-                    {{-- SessionMessage --}}
+                    @includeIf('helpers.errorMessage')
+                    {{-- Session Message | Error Message --}}
 
+
+                    {{-- Search Header --}}
+                    @includeIf('helpers.search-header', [
+                        'route' => 'admin.priorities.index',
+                    ])
+                    {{-- Search Header --}}
+
+                    {{-- Table --}}
                     <div>
                         @includeIf('modules.admin.priorities.table')
                     </div>
+                    {{-- Table --}}
 
                     {{-- Main Content --}}
 

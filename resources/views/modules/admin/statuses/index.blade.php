@@ -18,13 +18,22 @@
 
                     {{-- Main Content --}}
 
-                    {{-- SessionMessage --}}
+                    {{-- Session Message | Error Message --}}
                     @includeIf('helpers.sessionMessage')
-                    {{-- SessionMessage --}}
+                    @includeIf('helpers.errorMessage')
+                    {{-- Session Message | Error Message --}}
 
+                    {{-- Seach Header --}}
+                    @includeIf('helpers.search-header', [
+                        'route' => 'admin.statuses.index',
+                    ])
+                    {{-- Seach Header --}}
+
+                    {{-- Table  --}}
                     <div>
                         @includeIf('modules.admin.statuses.table')
                     </div>
+                    {{-- Table  --}}
 
                     {{-- Main Content --}}
 

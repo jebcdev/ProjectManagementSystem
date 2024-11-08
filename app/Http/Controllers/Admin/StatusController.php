@@ -6,27 +6,48 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Status\StoreStatusRequest;
 use App\Http\Requests\Status\UpdateStatusRequest;
 use App\Models\Status;
-
+use Illuminate\Http\Request;
 
 class StatusController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $statuses = Status::query()
-                ->orderBy('name', 'ASC')
-                ->get();
+            $data = Status::query();
+            $totalResults = null;
+
+            if ($request->filled('search')) {
+                $searchTerm = strtolower($request->search);
+
+
+                // Obtenemos los campos desde el modelo 
+                $searchableFields = (new Status)->getFillable();
+
+
+
+                $data->where(function ($query) use ($searchTerm, $searchableFields) {
+                    foreach ($searchableFields as $field) {
+                        $query->orWhereRaw("LOWER({$field}) LIKE ?", ["%{$searchTerm}%"]);
+                    }
+                });
+
+                $totalResults = $data->count();
+            }
+
+            $data = $data->orderBy('name', 'asc');
 
             return view('modules.admin.statuses.index', [
-                'statuses' => $statuses
+                'statuses' => $data->paginate(10)->appends(['search' => $request->search]),
+                'totalResults' => $totalResults
             ]);
         } catch (\Throwable $th) {
             throw $th;
         }
     }
+
 
     /**
      * Show the form for creating a new resource.

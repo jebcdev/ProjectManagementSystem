@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Tasks List') }} | {{ $tasks->total() }} {{ Str::plural(__('Task'), $tasks->total()) }}
             </h2>
-            
+
             <a class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150"
                 href="{{ route('tasks.create') }}">
                 {{ __('Create') }}
@@ -19,17 +19,22 @@
 
                     {{-- Main Content --}}
 
-                    {{-- SessionMessage --}}
+                    {{-- SessionMessage | ErrorMessage --}}
                     @includeIf('helpers.sessionMessage')
-                    {{-- SessionMessage --}}
-
-                    {{-- ErrorMessage --}}
                     @includeIf('helpers.errorMessage')
-                    {{-- ErrorMessage --}}
+                    {{-- SessionMessage | ErrorMessage --}}
 
+                    {{-- Search Header --}}
+                    @includeIf('helpers.search-header', [
+                        'route'=>'tasks.index',
+                    ])
+                    {{-- Search Header --}}
+
+                    {{-- Table --}}
                     <div>
                         @includeIf('modules.tasks.table')
                     </div>
+                    {{-- Table --}}
 
                     <div class="m-2 p-2 border-white">
                         {{ $tasks->links() }}

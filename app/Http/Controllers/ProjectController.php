@@ -8,6 +8,7 @@ use App\Models\Priority;
 use App\Models\Project;
 use App\Models\Status;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,36 +17,49 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            if (Auth::user()->isAdmin==true) {
-                $projects = Project::query()
-                    ->with([
-                        'creator',
-                        'updater',
-                        'status',
-                        'priority',
-                    ])
-                    ->orderBy('id', 'desc')
-                    // ->take(1)
-                    ->paginate(10);
-            } else {
-
-                $projects = Project::query()
-                    ->where('created_by', Auth::id())
-                    ->with([
-                        'creator',
-                        'updater',
-                        'status',
-                        'priority',
-                    ])
-                    ->orderBy('start_date', 'ASC')
-                    ->paginate(10);
+            $data = Project::query();
+            $totalResults = null;
+    
+            if ($request->filled('search')) {
+                $searchTerm = strtolower($request->search);
+    
+                // Obtenemos los campos directamente del modelo Project
+                $searchableFields = (new Project)->getFillable();
+    
+                $data->where(function ($query) use ($searchTerm, $searchableFields) {
+                    // Búsqueda en los campos de Project
+                    foreach ($searchableFields as $field) {
+                        $query->orWhereRaw("LOWER({$field}) LIKE ?", ["%{$searchTerm}%"]);
+                    }
+    
+                    // Búsqueda en los nombres de las relaciones
+                    $query->orWhereHas('creator', function ($q) use ($searchTerm) {
+                        $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
+                    })
+                    ->orWhereHas('status', function ($q) use ($searchTerm) {
+                        $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
+                    })
+                    ->orWhereHas('priority', function ($q) use ($searchTerm) {
+                        $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
+                    });
+                });
+    
+                $totalResults = $data->count();
             }
-
+    
+            $data = $data->with([
+                'creator',
+                'updater',
+                'status',
+                'priority',
+            ])->orderBy('name', 'asc');
+    
             return view('modules.projects.index', [
-                'projects' => $projects,
+                'projects' => $data->paginate(10)->appends(['search' => $request->search]),
+                'totalResults' => $totalResults
             ]);
         } catch (\Throwable $th) {
             throw $th;

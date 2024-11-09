@@ -69,46 +69,7 @@ class TaskController extends Controller
         }
     }
 
-    public function indexx()
-    {
-        try {
-            $tasks = null;
-            if (Auth::user()->isAdmin == true) {
-                $tasks = Task::query()
-                    ->with([
-                        'project',
-                        'assignedUser',
-                        'creator',
-                        'updater',
-                        'status',
-                        'priority',
-                    ])
-                    ->orderBy('id', 'desc')
 
-                    ->paginate(10);
-            } else {
-
-                $tasks = Task::query()
-                    ->where('created_by', Auth::id())
-                    ->with([
-                        'project',
-                        'assignedUser',
-                        'creator',
-                        'updater',
-                        'status',
-                        'priority',
-                    ])
-                    ->orderBy('id', 'desc')
-                    ->paginate(10);
-            }
-
-            return view('modules.tasks.index', [
-                'tasks' => $tasks,
-            ]);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
 
     /**
      * Show the form for creating a new resource.

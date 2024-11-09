@@ -343,5 +343,8 @@
     "Tasks Stats": "Estadísticas de Tareas",
     "Total Tasks": "Total de Tareas",
     "By Statuses": "Por Estados",
-    "By Priorities": "Por Prioridades"
+    "By Priorities": "Por Prioridades",
+
+    "Add Task To": "Agregar Tarea a",
+    "Add Task": "Agregar Tarea"
 }

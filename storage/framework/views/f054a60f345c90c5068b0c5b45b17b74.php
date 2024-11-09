@@ -11,12 +11,12 @@
      <?php $__env->slot('header', null, []); ?> 
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                <?php echo e(__('Projects Details')); ?> : <?php echo e($project->name); ?>
+                <?php echo e(__('Task Details')); ?> : <?php echo e($task->name); ?>
 
             </h2>
             <a class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
-                href="<?php echo e(route('projects.index')); ?>">
-                <?php echo e(__('Projects List')); ?>
+                href="<?php echo e(route('tasks.index')); ?>">
+                <?php echo e(__('Tasks List')); ?>
 
             </a>
         </div>
@@ -41,11 +41,12 @@
 
                         
                         <div class="bg-gray-700 rounded-lg p-2">
-                            <h1 class="font-extrabold text-xl text-center"><?php echo e($project?->name); ?></h1>
+                            <h1 class="font-extrabold text-xl text-center"><?php echo e($task?->name); ?></h1>
                             <div class="mt-2">
-                                <?php if($project?->image_path): ?>
+                                <?php if($task?->image_path): ?>
                                     <img class="w-20 rounded-full mx-auto object-cover	"
-                                        src="<?php echo e(Storage::url($project->image_path)); ?>" alt="<?php echo e($project?->name); ?>">
+                                        src="<?php echo e(Storage::url($task->image_path)); ?>"
+                                        alt="<?php echo e($task?->name); ?>">
                                 <?php else: ?>
                                     <span class="border rounded-full p-1 inline-block w-32 h-32 text-center text-3xl">
                                         😢
@@ -56,19 +57,28 @@
                         
 
                         
+                        <div class="w-full mt-4">
+                            <span class="m-4">
+                                <h2 class="font-extrabold underline"><?php echo e(__('Project')); ?>:</h2>
+                                <?php echo e($task?->project?->name); ?>
+
+                            </span>
+                        
+
+                        
                         <div class="flex justify-between gap-4">
 
                             
                             <div class="mt-4">
                                 <span class="m-4">
                                     <h2 class="font-extrabold underline"><?php echo e(__('Creator')); ?>:</h2>
-                                    <?php echo e($project?->creator?->name); ?>
+                                    <?php echo e($task?->creator?->name); ?>
 
                                 </span>
 
                                 <span class="mt-4">
                                     <h2 class="font-extrabold underline"><?php echo e(__('Updated By')); ?>:</h2>
-                                    <?php echo e($project?->updater ? $project?->updater?->name : __('No Updater')); ?>
+                                    <?php echo e($task?->updater ? $task?->updater?->name : __('No Updater')); ?>
 
                                 </span>
 
@@ -76,8 +86,8 @@
                                     <h2 class="font-extrabold underline"><?php echo e(__('Status')); ?>:</h2>
                                     <span
                                         class="inline-block px-3 py-1 text-xs font-semibold text-white border border-white rounded-full"
-                                        style="background-color: <?php echo e($project?->status?->color); ?>;">
-                                        <?php echo e($project?->status?->name); ?>
+                                        style="background-color: <?php echo e($task?->status?->color); ?>;">
+                                        <?php echo e($task?->status?->name); ?>
 
                                     </span>
                                 </span>
@@ -86,8 +96,8 @@
                                     <h2 class="font-extrabold underline"><?php echo e(__('Priority')); ?>:</h2>
                                     <span
                                         class="inline-block px-3 py-1 text-xs font-semibold text-white border border-white rounded-full"
-                                        style="background-color: <?php echo e($project?->priority?->color); ?>;">
-                                        <?php echo e($project?->priority?->name); ?>
+                                        style="background-color: <?php echo e($task?->priority?->color); ?>;">
+                                        <?php echo e($task?->priority?->name); ?>
 
                                     </span>
                                 </span>
@@ -99,25 +109,25 @@
                             <div class="mt-4">
                                 <span class="m-4">
                                     <h2 class="font-extrabold underline"><?php echo e(__('Start Date')); ?>:</h2>
-                                    <?php echo e($project?->start_date?->format('Y-m-d')); ?>
+                                    <?php echo e($task?->start_date?->format('Y-m-d')); ?>
 
                                 </span>
 
                                 <span class="m-4">
                                     <h2 class="font-extrabold underline"><?php echo e(__('Due Date')); ?>:</h2>
-                                    <?php echo e($project?->due_date ? $project?->due_date->format('Y-m-d') : __('No Due Date')); ?>
+                                    <?php echo e($task?->due_date ? $task?->due_date->format('Y-m-d') : __('No Due Date')); ?>
 
                                 </span>
 
                                 <span class="m-4">
                                     <h2 class="font-extrabold underline"><?php echo e(__('Created At')); ?>:</h2>
-                                    <?php echo e($project?->created_at ? $project?->created_at->format('Y-m-d') : __('No Due Date')); ?>
+                                    <?php echo e($task?->created_at ? $task?->created_at->format('Y-m-d') : __('No Due Date')); ?>
 
                                 </span>
 
                                 <span class="m-4">
                                     <h2 class="font-extrabold underline"><?php echo e(__('Updated At')); ?>:</h2>
-                                    <?php echo e($project?->created_at != $project?->updated_at ? $project?->updated_at->format('Y-m-d') : __('Not Updated')); ?>
+                                    <?php echo e($task?->created_at != $task?->updated_at ? $task?->updated_at->format('Y-m-d') : __('Not Updated')); ?>
 
                                 </span>
                             </div>
@@ -137,19 +147,19 @@
                     
                     <br><br>
                     <div class="m-5">
-                        <?php echo e($project?->description); ?>
+                        <?php echo e($task?->description); ?>
 
                     </div>
                     
 
                     
                     <br>
-                    <form class="flex justify-end gap-3" action="<?php echo e(route('projects.destroy', $project)); ?>"
+                    <form class="flex justify-end gap-2" action="<?php echo e(route('tasks.destroy', $task)); ?>"
                         method="POST">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('DELETE'); ?>
                         <a class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
-                            href="<?php echo e(route('projects.edit', $project)); ?>">
+                            href="<?php echo e(route('tasks.edit', $task)); ?>">
                             <?php echo e(__('Edit')); ?>
 
                         </a>
@@ -159,21 +169,8 @@
                             <?php echo e(__('Delete')); ?>
 
                         </button>
-
-                        <a 
-                        class="px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
-                        href="<?php echo e(route('projects.add-task',$project)); ?>">
-                    <?php echo e(__('Add Task')); ?>
-
-                    </a>
                     </form>
                     
-
-                    <?php if($project->tasks->count()): ?>
-                        <div class="mt-4">
-                            <?php if ($__env->exists('modules.tasks.table', ['tasks' => $project->tasks])) echo $__env->make('modules.tasks.table', ['tasks' => $project->tasks], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-                        </div>
-                    <?php endif; ?>
 
                     
                 </div>
@@ -189,4 +186,4 @@
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
 <?php endif; ?>
-<?php /**PATH D:\laragon\www\ProjectManagementSystem\resources\views\modules\projects\show.blade.php ENDPATH**/ ?>
+<?php /**PATH D:\laragon\www\ProjectManagementSystem\resources\views/modules/tasks/show.blade.php ENDPATH**/ ?>

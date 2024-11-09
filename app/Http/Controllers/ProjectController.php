@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
+use App\Http\Requests\Task\StoreTaskRequest;
 use App\Models\Priority;
 use App\Models\Project;
 use App\Models\Status;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,41 +24,41 @@ class ProjectController extends Controller
         try {
             $data = Project::query();
             $totalResults = null;
-    
+
             if ($request->filled('search')) {
                 $searchTerm = strtolower($request->search);
-    
+
                 // Obtenemos los campos directamente del modelo Project
                 $searchableFields = (new Project)->getFillable();
-    
+
                 $data->where(function ($query) use ($searchTerm, $searchableFields) {
                     // Búsqueda en los campos de Project
                     foreach ($searchableFields as $field) {
                         $query->orWhereRaw("LOWER({$field}) LIKE ?", ["%{$searchTerm}%"]);
                     }
-    
+
                     // Búsqueda en los nombres de las relaciones
                     $query->orWhereHas('creator', function ($q) use ($searchTerm) {
                         $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
                     })
-                    ->orWhereHas('status', function ($q) use ($searchTerm) {
-                        $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
-                    })
-                    ->orWhereHas('priority', function ($q) use ($searchTerm) {
-                        $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
-                    });
+                        ->orWhereHas('status', function ($q) use ($searchTerm) {
+                            $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
+                        })
+                        ->orWhereHas('priority', function ($q) use ($searchTerm) {
+                            $q->whereRaw("LOWER(name) LIKE ?", ["%{$searchTerm}%"]);
+                        });
                 });
-    
+
                 $totalResults = $data->count();
             }
-    
+
             $data = $data->with([
                 'creator',
                 'updater',
                 'status',
                 'priority',
             ])->orderBy('name', 'asc');
-    
+
             return view('modules.projects.index', [
                 'projects' => $data->paginate(10)->appends(['search' => $request->search]),
                 'totalResults' => $totalResults
@@ -260,12 +262,12 @@ class ProjectController extends Controller
             if ($project->created_by != Auth::id() && !Auth::user()->isAdmin) {
                 return to_route('projects.index')->with('errorMessage', __('You Are Not Authorized To Delete This Project'));
             }
-        
+
             // Borra la imagen del proyecto si existe
             if ($project->image_path && Storage::disk('public')->exists($project->image_path)) {
                 Storage::disk('public')->delete($project->image_path);
             }
-        
+
             // Elimina las imágenes y las tareas relacionadas
             foreach ($project->tasks as $task) {
                 if ($task->image_path && Storage::disk('public')->exists($task->image_path)) {
@@ -273,18 +275,89 @@ class ProjectController extends Controller
                 }
                 $task->delete();
             }
-        
+
             // Elimina el proyecto
             $project->delete();
-        
+
             // Mensaje de éxito
             $message = __('Project Deleted Successfully') . ': ' . $project->name;
-        
+
             return to_route('projects.index')->with('sessionMessage', $message);
         } catch (\Throwable $th) {
             throw $th;
         }
-        
-        
+    }
+
+    public function addTask(Project $project)
+    {
+        try {
+            // Verifica si el usuario tiene permisos para eliminar el proyecto
+            if ($project->created_by != Auth::id() && !Auth::user()->isAdmin) {
+                return to_route('projects.index')->with('errorMessage', __('You Are Not Authorized To Delete This Project'));
+            }
+
+            $task = new Task();
+            $task->project_id = $project->id;
+            $task->created_by = Auth::id();
+            $task->load([
+                'project',
+                'assignedUser',
+                'creator',
+                'updater',
+                'status',
+                'priority',
+            ]);
+
+            $users = User::query()
+                ->where('id', '!=', Auth::id())
+                ->orderBy('name', 'ASC')
+                ->get();
+
+            $statuses = Status::query()
+                ->orderBy('name', 'ASC')
+                ->get();
+
+            $priorities = Priority::query()
+                ->orderBy('name', 'ASC')
+                ->get();
+
+            return view('modules.projects.add-task', [
+                'project' => $project,
+                'task' => $task,
+                'users' => $users,
+                'statuses' => $statuses,
+                'priorities' => $priorities,
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function saveTask(StoreTaskRequest $request)
+    {
+        try {
+            // Valida los datos de la solicitud
+            $data = $request->validated();
+            
+            $imagePath = "";
+
+            if ($request->hasFile('image_path')) {
+
+                $imagePath = $request->file('image_path')->store('assets/img/tasks', 'public');
+
+                $data['image_path'] =  $imagePath;
+
+            }
+
+            // Crea el registro
+            $task = Task::create($data);
+
+            // Mensaje de éxito
+            $message = __('Task Created Successfully') . ': ' . $task->name;
+
+            return to_route('projects.show',$task->project)->with('sessionMessage', $message);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

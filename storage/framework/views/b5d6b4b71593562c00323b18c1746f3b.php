@@ -14,7 +14,7 @@
                 <?php echo e(__('Tasks List')); ?> | <?php echo e($tasks->total()); ?> <?php echo e(Str::plural(__('Task'), $tasks->total())); ?>
 
             </h2>
-            
+
             <a class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150"
                 href="<?php echo e(route('tasks.create')); ?>">
                 <?php echo e(__('Create')); ?>
@@ -32,15 +32,22 @@
 
                     
                     <?php if ($__env->exists('helpers.sessionMessage')) echo $__env->make('helpers.sessionMessage', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-                    
-
-                    
                     <?php if ($__env->exists('helpers.errorMessage')) echo $__env->make('helpers.errorMessage', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     
 
+                    
+                    <?php if ($__env->exists('helpers.search-header', [
+                        'route'=>'tasks.index',
+                    ])) echo $__env->make('helpers.search-header', [
+                        'route'=>'tasks.index',
+                    ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                    
+
+                    
                     <div>
                         <?php if ($__env->exists('modules.tasks.table')) echo $__env->make('modules.tasks.table', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     </div>
+                    
 
                     <div class="m-2 p-2 border-white">
                         <?php echo e($tasks->links()); ?>

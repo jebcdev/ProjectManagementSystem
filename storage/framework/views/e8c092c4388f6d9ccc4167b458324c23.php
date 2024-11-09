@@ -31,14 +31,15 @@
 
                     
                     <?php if ($__env->exists('helpers.sessionMessage')) echo $__env->make('helpers.sessionMessage', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                    <?php if ($__env->exists('helpers.errorMessage')) echo $__env->make('helpers.errorMessage', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     
 
                     
                     <?php if ($__env->exists('helpers.search-header', [
                         'route' => 'admin.statuses.index',
-                        ])) echo $__env->make('helpers.search-header', [
+                    ])) echo $__env->make('helpers.search-header', [
                         'route' => 'admin.statuses.index',
-                        ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                    ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     
 
                     

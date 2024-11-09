@@ -11,7 +11,9 @@
      <?php $__env->slot('header', null, []); ?> 
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                <?php echo e(__('Projects List')); ?> | <?php echo e($projects->total()); ?> <?php echo e(Str::plural(__('Project'), $projects->total())); ?>
+                <?php echo e(__('Projects List')); ?> | <?php echo e($projects->total()); ?>
+
+                <?php echo e(Str::plural(__('Project'), $projects->total())); ?>
 
             </h2>
             <a class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150"
@@ -31,15 +33,21 @@
 
                     
                     <?php if ($__env->exists('helpers.sessionMessage')) echo $__env->make('helpers.sessionMessage', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-                    
-
-                    
                     <?php if ($__env->exists('helpers.errorMessage')) echo $__env->make('helpers.errorMessage', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     
 
+                    
+                    <?php if ($__env->exists('helpers.search-header', [
+                        'route' => 'projects.index',
+                    ])) echo $__env->make('helpers.search-header', [
+                        'route' => 'projects.index',
+                    ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                    
+                    
                     <div>
                         <?php if ($__env->exists('modules.projects.table')) echo $__env->make('modules.projects.table', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     </div>
+                    
 
                     
 

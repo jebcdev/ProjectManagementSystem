@@ -24,6 +24,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 Route::middleware('auth')->group(function () {
 
     Route::resource('/projects', ProjectController::class)->names('projects');
+    Route::get('/projects/add-task/{project}/',[ProjectController::class,'addTask'])->name('projects.add-task');
+    Route::post('/projects/add-task',[ProjectController::class,'saveTask'])->name('projects.save-task');
 
     Route::resource('/tasks', TaskController::class)->names('tasks');
     

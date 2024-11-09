@@ -346,5 +346,15 @@
     "By Priorities": "Por Prioridades",
 
     "Add Task To": "Agregar Tarea a",
-    "Add Task": "Agregar Tarea"
+    "Add Task": "Agregar Tarea",
+    "You Need To Create A Project First": "Necesitas Crear Un Proyecto Primero",
+    "Deadlines": "Fechas Limite",
+    "Deadlines Overview": "Resumen de Fechas de Vencimiento",
+    "Projects Deadlines": "Fechas de Vencimiento de Proyectos",
+    "Upcoming Deadlines (Next 7 Days)": "Próximas Fechas de Vencimiento (Próximos 7 Días)",
+    "Overdue Deadlines": "Fechas de Vencimiento Caducadas",
+    "Tasks Deadlines": "Fechas de Vencimiento de Tareas",
+    "Overdue Tasks": "Tareas Vencidas"
+
+
 }

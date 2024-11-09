@@ -23,11 +23,12 @@ class DatabaseSeeder extends Seeder
         ]); */
 
         $this->call([
-            UserSeeder::class,
-            StatusSeeder::class,
-            PrioritySeeder::class,
-            ProjectSeeder::class,
-            TaskSeeder::class,
+            // StatusSeeder::class,
+            // PrioritySeeder::class,
+            // UserSeeder::class,
+            // ProjectSeeder::class,
+            // TaskSeeder::class,
+            _OnlyUsersSeeder::class,
         ]);
     }
 }

@@ -25,14 +25,32 @@ class _SiteController extends Controller
 
             $projects = Project::all();
             $tasks = Task::all();
-            $statuses=Status::all();
-            $priorities=Priority::all();
+            $statuses = Status::all();
+            $priorities = Priority::all();
 
             return view('modules._dashboard.index', [
                 'projects' => $projects,
                 'tasks' => $tasks,
                 'statuses' => $statuses,
                 'priorities' => $priorities,
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function deadLines()
+    {
+        try {
+            $statuses = Status::all();
+            $priorities = Priority::all();
+            $projects = Project::all();
+            $tasks = Task::all();
+            return view('modules._dashboard.deadlines', [
+                'statuses' => $statuses,
+                'priorities' => $priorities,
+                'projects' => $projects,
+                'tasks' => $tasks,
             ]);
         } catch (\Throwable $th) {
             throw $th;

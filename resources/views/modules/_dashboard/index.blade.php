@@ -126,7 +126,7 @@
                                                     {{ $status?->name }}</h5>
                                                 <p class="font-normal text-gray-700 dark:text-gray-400">
                                                     {{ $status?->tasks?->count() }}
-                                                    {{ Str::plural(__('Project'), $status?->tasks?->count()) }}
+                                                    {{ Str::plural(__('Task'), $status?->tasks?->count()) }}
 
                                                 </p>
                                             </a>
@@ -150,7 +150,7 @@
                                                     {{ $priority?->name }}</h5>
                                                 <p class="font-normal text-gray-700 dark:text-gray-400">
                                                     {{ $priority?->tasks?->count() }}
-                                                    {{ Str::plural(__('Project'), $priority?->tasks?->count()) }}
+                                                    {{ Str::plural(__('Task'), $priority?->tasks?->count()) }}
 
                                                 </p>
                                             </a>

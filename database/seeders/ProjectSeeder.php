@@ -16,7 +16,8 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i=0; $i <21 ; $i++) { 
+        // for ($i=0; $i <21 ; $i++) { 
+        for ($i=0; $i <5 ; $i++) { 
             Project::create([
                 'created_by'=>User::inRandomOrder()->first()->id,
                 'updated_by'=>fake()->randomElement([null, User::inRandomOrder()->first()->id]),
@@ -24,8 +25,10 @@ class ProjectSeeder extends Seeder
                 'priority_id'=>Priority::inRandomOrder()->first()->id,
                 'name'=>'Project 000'.($i+1),
                 'description' => 'Description of: Project 000' . ($i + 1) . ' - ' . implode("\n\n", fake()->paragraphs(5)),
-                'start_date'=>fake()->dateTimeBetween('-1 year', 'now'),
-                'due_date'=>fake()->randomElement([null, fake()->dateTimeBetween('now', '+1 year')]),
+                // 'start_date'=>fake()->dateTimeBetween('-1 year', 'now'),
+                // 'due_date'=>fake()->randomElement([null, fake()->dateTimeBetween('now', '+1 year')]),
+                'start_date'=>fake()->dateTimeBetween('-2 year', 'now'),
+                'due_date'=>fake()->randomElement([null, fake()->dateTimeBetween('-1 year', '+1 year')]),
                 'image_path'=>null,
             ]);
         }

@@ -18,9 +18,14 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
         try {
+            if (Project::count() == 0) {
+                return redirect()->route('projects.index')->with('errorMessage', __('You Need To Create A Project First'));
+            }
+
             $data = Task::query();
             $totalResults = null;
 
@@ -77,6 +82,10 @@ class TaskController extends Controller
     public function create()
     {
         try {
+            if (Project::count() == 0) {
+                return redirect()->route('projects.index')->with('errorMessage', __('You Need To Create A Project First'));
+            }
+
             $task = new Task();
             $task->load([
                 'project',
@@ -156,7 +165,9 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         try {
-
+            if (Project::count() == 0) {
+                return redirect()->route('projects.index')->with('errorMessage', __('You Need To Create A Project First'));
+            }
 
             $task
                 ->load([

@@ -18,19 +18,23 @@ class TaskSeeder extends Seeder
     public function run(): void
     {
         foreach (Project::all() as $project) {
-            for ($i=1; $i <=50 ; $i++) { 
+            // for ($i = 1; $i <= 50; $i++) {
+            for ($i = 1; $i <= 5; $i++) {
                 Task::create([
-                    'project_id'=>$project->id,
-                    'assigned_user_id'=>fake()->randomElement([User::inRandomOrder()->first()->id, null]),
-                    'created_by'=>User::inRandomOrder()->first()->id,
-                    'updated_by'=>fake()->randomElement([User::inRandomOrder()->first()->id, null]),
-                    'status_id'=>Status::inRandomOrder()->first()->id,
-                    'priority_id'=>Priority::inRandomOrder()->first()->id,
-                    'name'=>$project->name.' Task 000'.$i,
+                    'project_id' => $project->id,
+                    'assigned_user_id' => fake()->randomElement([User::inRandomOrder()->first()->id, null]),
+                    'created_by' => User::inRandomOrder()->first()->id,
+                    'updated_by' => fake()->randomElement([User::inRandomOrder()->first()->id, null]),
+                    'status_id' => Status::inRandomOrder()->first()->id,
+                    'priority_id' => Priority::inRandomOrder()->first()->id,
+                    'name' => $project->name . ' Task 000' . $i,
                     'description' => implode("\n\n", fake()->paragraphs(5)),
-                    'start_date'=>fake()->dateTimeBetween('-1 year', 'now'),
-                    'due_date'=>fake()->randomElement([null, fake()->dateTimeBetween('now', '+1 year')]),
-                    'image_path'=>null,
+                    // 'start_date'=>fake()->dateTimeBetween('-1 year', 'now'),
+                    // 'due_date'=>fake()->randomElement([null, fake()->dateTimeBetween('now', '+1 year')]),
+
+                    'start_date' => fake()->dateTimeBetween('-2 year', 'now'),
+                    'due_date'=>fake()->randomElement([null, fake()->dateTimeBetween('-1 year', '+1 year')]),
+                    'image_path' => null,
                 ]);
             }
         }
